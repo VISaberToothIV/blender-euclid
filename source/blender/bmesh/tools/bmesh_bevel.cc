@@ -346,6 +346,7 @@ struct BevelParams {
   bool use_weights;
   int bweight_offset_vert;
   int bweight_offset_edge;
+  int bweight_offset_edge_index[100];
   /** Should bevel prefer to slide along edges rather than keep widths spec? */
   bool loop_slide;
   /** Should offsets be limited by collisions? */

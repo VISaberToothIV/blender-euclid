@@ -40,6 +40,7 @@
   { \
     .value = 0.1f, \
     .res = 1, \
+    .index = 1, \
     .flags = 0, \
     .val_flags = MOD_BEVEL_AMT_OFFSET, \
     .profile_type = MOD_BEVEL_PROFILE_SUPERELLIPSE, \

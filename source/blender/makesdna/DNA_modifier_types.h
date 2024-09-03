@@ -484,6 +484,7 @@ typedef struct BevelModifierData {
   float value;
   /** The resolution (as originally coded, it is the number of recursive bevels). */
   int res;
+  int index;
   /** General option flags. */
   short flags;
   /** Used to interpret the bevel value. */
@@ -515,12 +516,13 @@ typedef struct BevelModifierData {
   /** if the MOD_BEVEL_VWEIGHT option is set,
    * this will be the name of the vert group, #MAX_VGROUP_NAME */
   char defgrp_name[64];
-
   char _pad1[4];
+  char _pad2[4];
   /** Curve info for the custom profile */
   struct CurveProfile *custom_profile;
 
-  void *_pad2;
+  void *_pad3;
+  char _pad4[8];
 } BevelModifierData;
 
 /** #BevelModifierData.flags and BevelModifierData.lim_flags */
@@ -532,6 +534,7 @@ enum {
   MOD_BEVEL_ANGLE = (1 << 3),
   MOD_BEVEL_WEIGHT = (1 << 4),
   MOD_BEVEL_VGROUP = (1 << 5),
+  MOD_BEVEL_INDEX = (1 << 6),
 /* unused                  = (1 << 6), */
 #ifdef DNA_DEPRECATED_ALLOW
   MOD_BEVEL_CUSTOM_PROFILE_DEPRECATED = (1 << 7),

@@ -123,6 +123,27 @@ static Mesh *modify_mesh(ModifierData *md, const ModifierEvalContext *ctx, Mesh 
   const int bweight_offset_edge = CustomData_get_offset_named(
       &bm->edata, CD_PROP_FLOAT, "bevel_weight_edge");
 
+  const int bweight_index_weight_1 = CustomData_get_offset_named(
+      &bm->edata, CD_PROP_FLOAT, "BevelWeight_Euclid_1");
+  const int bweight_index_weight_2 = CustomData_get_offset_named(
+      &bm->edata, CD_PROP_FLOAT, "BevelWeight_Euclid_2");
+  const int bweight_index_weight_3 = CustomData_get_offset_named(
+      &bm->edata, CD_PROP_FLOAT, "BevelWeight_Euclid_3");
+  const int bweight_index_weight_4 = CustomData_get_offset_named(
+      &bm->edata, CD_PROP_FLOAT, "BevelWeight_Euclid_4");
+  const int bweight_index_weight_5 = CustomData_get_offset_named(
+      &bm->edata, CD_PROP_FLOAT, "BevelWeight_Euclid_5");
+  const int bweight_index_weight_6 = CustomData_get_offset_named(
+      &bm->edata, CD_PROP_FLOAT, "BevelWeight_Euclid_6");
+  const int bweight_index_weight_7 = CustomData_get_offset_named(
+      &bm->edata, CD_PROP_FLOAT, "BevelWeight_Euclid_7");
+  const int bweight_index_weight_8 = CustomData_get_offset_named(
+      &bm->edata, CD_PROP_FLOAT, "BevelWeight_Euclid_8");
+  const int bweight_index_weight_9 = CustomData_get_offset_named(
+      &bm->edata, CD_PROP_FLOAT, "BevelWeight_Euclid_9");
+  const int bweight_index_weight_10 = CustomData_get_offset_named(
+      &bm->edata, CD_PROP_FLOAT, "BevelWeight_Euclid_10");
+
   if (bmd->affect_type == MOD_BEVEL_AFFECT_VERTICES) {
     BM_ITER_MESH (v, &iter, bm, BM_VERTS_OF_MESH) {
       if (bmd->lim_flags & MOD_BEVEL_WEIGHT) {
@@ -164,6 +185,64 @@ static Mesh *modify_mesh(ModifierData *md, const ModifierEvalContext *ctx, Mesh 
       if (BM_edge_is_manifold(e)) {
         if (bmd->lim_flags & MOD_BEVEL_WEIGHT) {
           weight = bweight_offset_edge == -1 ? 0.0f : BM_ELEM_CD_GET_FLOAT(e, bweight_offset_edge);
+          if (weight == 0.0f) {
+            continue;
+          }
+        }
+        else if (bmd->lim_flags & MOD_BEVEL_INDEX) {
+          if (bmd->index == 1) {
+            weight = bweight_index_weight_1 == -1 ?
+                         0.0f :
+                         BM_ELEM_CD_GET_FLOAT(e, bweight_index_weight_1);
+          }
+          else if (bmd->index == 2) {
+            weight = bweight_index_weight_2 == -1 ?
+                         0.0f :
+                         BM_ELEM_CD_GET_FLOAT(e, bweight_index_weight_2);
+          }
+          else if (bmd->index == 3) {
+            weight = bweight_index_weight_3 == -1 ?
+                         0.0f :
+                         BM_ELEM_CD_GET_FLOAT(e, bweight_index_weight_3);
+          }
+          else if (bmd->index == 4) {
+            weight = bweight_index_weight_4 == -1 ?
+                         0.0f :
+                         BM_ELEM_CD_GET_FLOAT(e, bweight_index_weight_4);
+          }
+          else if (bmd->index == 5) {
+            weight = bweight_index_weight_5 == -1 ?
+                         0.0f :
+                         BM_ELEM_CD_GET_FLOAT(e, bweight_index_weight_5);
+          }
+          else if (bmd->index == 6) {
+            weight = bweight_index_weight_6 == -1 ?
+                         0.0f :
+                         BM_ELEM_CD_GET_FLOAT(e, bweight_index_weight_6);
+          }
+          else if (bmd->index == 7) {
+            weight = bweight_index_weight_7 == -1 ?
+                         0.0f :
+                         BM_ELEM_CD_GET_FLOAT(e, bweight_index_weight_7);
+          }
+          else if (bmd->index == 8) {
+            weight = bweight_index_weight_8 == -1 ?
+                         0.0f :
+                         BM_ELEM_CD_GET_FLOAT(e, bweight_index_weight_8);
+          }
+          else if (bmd->index == 9) {
+            weight = bweight_index_weight_9 == -1 ?
+                         0.0f :
+                         BM_ELEM_CD_GET_FLOAT(e, bweight_index_weight_9);
+          }
+          else if (bmd->index == 10) {
+            weight = bweight_index_weight_10 == -1 ?
+                         0.0f :
+                         BM_ELEM_CD_GET_FLOAT(e, bweight_index_weight_10);
+          }
+          else {
+            weight = 0.0f;
+          }
           if (weight == 0.0f) {
             continue;
           }
@@ -274,7 +353,9 @@ static void panel_draw(const bContext * /*C*/, Panel *panel)
   else if (limit_method == MOD_BEVEL_VGROUP) {
     modifier_vgroup_ui(col, ptr, &ob_ptr, "vertex_group", "invert_vertex_group", nullptr);
   }
-
+  else if (limit_method == MOD_BEVEL_INDEX) {
+    uiItemR(col, ptr, "index", UI_ITEM_NONE, nullptr, ICON_NONE);
+  }
   modifier_panel_end(layout, ptr);
 }
 

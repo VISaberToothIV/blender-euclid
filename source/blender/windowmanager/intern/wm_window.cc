@@ -527,6 +527,7 @@ void wm_window_title(wmWindowManager *wm, wmWindow *win)
 
   str += " - Blender ";
   str += BKE_blender_version_string();
+  str += " (Euclid)";
 
   GHOST_SetTitle(handle, str.c_str());
 

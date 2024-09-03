@@ -4709,6 +4709,11 @@ static void rna_def_modifier_bevel(BlenderRNA *brna)
        0,
        "Vertex Group",
        "Use vertex group weights to select whether vertex or edge is beveled"},
+      {MOD_BEVEL_INDEX,
+       "INDEX",
+       0,
+       "Index",
+       "Use indexed bevel weights to determine how much bevel is applied in edge mode"},
       {0, nullptr, 0, nullptr, nullptr},
   };
 
@@ -4816,6 +4821,13 @@ static void rna_def_modifier_bevel(BlenderRNA *brna)
   RNA_def_property_ui_range(prop, 1, 100, 1, -1);
   RNA_def_property_ui_text(prop, "Segments", "Number of segments for round edges/verts");
   RNA_def_property_update(prop, 0, "rna_BevelModifier_update_segments");
+
+  prop = RNA_def_property(srna, "index", PROP_INT, PROP_NONE);
+  RNA_def_property_int_sdna(prop, nullptr, "index");
+  RNA_def_property_range(prop, 1, 10);
+  RNA_def_property_ui_range(prop, 1, 10, 1, -1);
+  RNA_def_property_ui_text(prop, "Index", "Bevel index position");
+  RNA_def_property_update(prop, 0, "rna_Modifier_update");
 
   prop = RNA_def_property(srna, "affect", PROP_ENUM, PROP_NONE); /* as an enum */
   RNA_def_property_enum_sdna(prop, nullptr, "affect_type");
