@@ -123,26 +123,20 @@ static Mesh *modify_mesh(ModifierData *md, const ModifierEvalContext *ctx, Mesh 
   const int bweight_offset_edge = CustomData_get_offset_named(
       &bm->edata, CD_PROP_FLOAT, "bevel_weight_edge");
 
-  const int bweight_index_weight_1 = CustomData_get_offset_named(
-      &bm->edata, CD_PROP_FLOAT, "BevelWeight_Euclid_1");
-  const int bweight_index_weight_2 = CustomData_get_offset_named(
-      &bm->edata, CD_PROP_FLOAT, "BevelWeight_Euclid_2");
-  const int bweight_index_weight_3 = CustomData_get_offset_named(
-      &bm->edata, CD_PROP_FLOAT, "BevelWeight_Euclid_3");
-  const int bweight_index_weight_4 = CustomData_get_offset_named(
-      &bm->edata, CD_PROP_FLOAT, "BevelWeight_Euclid_4");
-  const int bweight_index_weight_5 = CustomData_get_offset_named(
-      &bm->edata, CD_PROP_FLOAT, "BevelWeight_Euclid_5");
-  const int bweight_index_weight_6 = CustomData_get_offset_named(
-      &bm->edata, CD_PROP_FLOAT, "BevelWeight_Euclid_6");
-  const int bweight_index_weight_7 = CustomData_get_offset_named(
-      &bm->edata, CD_PROP_FLOAT, "BevelWeight_Euclid_7");
-  const int bweight_index_weight_8 = CustomData_get_offset_named(
-      &bm->edata, CD_PROP_FLOAT, "BevelWeight_Euclid_8");
-  const int bweight_index_weight_9 = CustomData_get_offset_named(
-      &bm->edata, CD_PROP_FLOAT, "BevelWeight_Euclid_9");
-  const int bweight_index_weight_10 = CustomData_get_offset_named(
-      &bm->edata, CD_PROP_FLOAT, "BevelWeight_Euclid_10");
+  const int num_weights =
+      100;  // Const size - non-dynamic required, and specifies amount of bevel instances.
+  const char *weight_names[num_weights];
+  char name_buffer[32];
+
+  for (int i = 0; i < num_weights; i++) {
+    snprintf(name_buffer, sizeof(name_buffer), "BevelWeight_Euclid_%d", i + 1);
+    weight_names[i] = strdup(name_buffer);
+  }
+
+  int bweight_indices[num_weights];
+  for (int i = 0; i < num_weights; i++) {
+    bweight_indices[i] = CustomData_get_offset_named(&bm->edata, CD_PROP_FLOAT, weight_names[i]);
+  }
 
   if (bmd->affect_type == MOD_BEVEL_AFFECT_VERTICES) {
     BM_ITER_MESH (v, &iter, bm, BM_VERTS_OF_MESH) {
@@ -190,55 +184,9 @@ static Mesh *modify_mesh(ModifierData *md, const ModifierEvalContext *ctx, Mesh 
           }
         }
         else if (bmd->lim_flags & MOD_BEVEL_INDEX) {
-          if (bmd->index == 1) {
-            weight = bweight_index_weight_1 == -1 ?
-                         0.0f :
-                         BM_ELEM_CD_GET_FLOAT(e, bweight_index_weight_1);
-          }
-          else if (bmd->index == 2) {
-            weight = bweight_index_weight_2 == -1 ?
-                         0.0f :
-                         BM_ELEM_CD_GET_FLOAT(e, bweight_index_weight_2);
-          }
-          else if (bmd->index == 3) {
-            weight = bweight_index_weight_3 == -1 ?
-                         0.0f :
-                         BM_ELEM_CD_GET_FLOAT(e, bweight_index_weight_3);
-          }
-          else if (bmd->index == 4) {
-            weight = bweight_index_weight_4 == -1 ?
-                         0.0f :
-                         BM_ELEM_CD_GET_FLOAT(e, bweight_index_weight_4);
-          }
-          else if (bmd->index == 5) {
-            weight = bweight_index_weight_5 == -1 ?
-                         0.0f :
-                         BM_ELEM_CD_GET_FLOAT(e, bweight_index_weight_5);
-          }
-          else if (bmd->index == 6) {
-            weight = bweight_index_weight_6 == -1 ?
-                         0.0f :
-                         BM_ELEM_CD_GET_FLOAT(e, bweight_index_weight_6);
-          }
-          else if (bmd->index == 7) {
-            weight = bweight_index_weight_7 == -1 ?
-                         0.0f :
-                         BM_ELEM_CD_GET_FLOAT(e, bweight_index_weight_7);
-          }
-          else if (bmd->index == 8) {
-            weight = bweight_index_weight_8 == -1 ?
-                         0.0f :
-                         BM_ELEM_CD_GET_FLOAT(e, bweight_index_weight_8);
-          }
-          else if (bmd->index == 9) {
-            weight = bweight_index_weight_9 == -1 ?
-                         0.0f :
-                         BM_ELEM_CD_GET_FLOAT(e, bweight_index_weight_9);
-          }
-          else if (bmd->index == 10) {
-            weight = bweight_index_weight_10 == -1 ?
-                         0.0f :
-                         BM_ELEM_CD_GET_FLOAT(e, bweight_index_weight_10);
+          if (bmd->index >= 1 && bmd->index <= num_weights) {
+            int bweight_index = bweight_indices[bmd->index - 1];
+            weight = (bweight_index == -1) ? 0.0f : BM_ELEM_CD_GET_FLOAT(e, bweight_index);
           }
           else {
             weight = 0.0f;
